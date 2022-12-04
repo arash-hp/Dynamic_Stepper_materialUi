@@ -4,15 +4,11 @@ import React from "react";
 
 export function InputField(props) {
   const [field, meta] = useField(props);
-  // const [, , { setValue }] = useField(props);
-  console.log(meta);
-
-  
 
   return (
     <>
       <TextField type="text" {...field} {...props}/>
-      {(meta.error && meta.touched) && <div>{meta.error}</div>}
+      {(meta.error && meta.touched) && <div style={{color:'red'}}>{meta.error}</div>}
     </>
   );
 }

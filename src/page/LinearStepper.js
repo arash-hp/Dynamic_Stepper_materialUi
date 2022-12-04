@@ -12,13 +12,14 @@ import { initialValues } from "../config/formInitialValues";
 import { getStepsAction } from "../redux/counterSlice";
 import StepForm from "../components/StepForm";
 import Stepper from "../components/Stepper";
+import LinearProgress from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
 
 const useStyles = makeStyles((theme) => ({
   button: {
     marginRight: theme.spacing(1),
   },
 }));
-
 
 const currentValidationSchema = Yup.object().shape({
   name: Yup.string()
@@ -49,6 +50,7 @@ export const LinaerStepper = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [dataSteps, setDataSteps] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -72,12 +74,12 @@ export const LinaerStepper = () => {
     return data;
   };
 
-
   const handleRemove = (nextStep) => {
     setActiveStep(nextStep);
   };
 
   function handleSubmit(values, actions) {
+    setLoading(true);
     dispatch(getStepsAction(values));
     addSteps({
       process_id: "1",
@@ -86,21 +88,26 @@ export const LinaerStepper = () => {
       data: values.steps,
       finished: "1",
       field_id: "3",
-    }).then((res) => navigate("/step-show"));
+    }).then((res) => {
+      navigate("/step-show");
+      setLoading(false);
+    });
   }
 
   return (
     <Formik
       initialValues={initialValues}
-      // validationSchema={Yup.object().shape(
-      //   {
-      //      `steps[${activeStep}].name`:Yup.string().required("Required"),
-      //      `steps[${activeStep}].family`:Yup.string().required("Required"),
-      //      `steps[${activeStep}].message`:Yup.string().required("Required"),
-      //      `steps[${activeStep}].description`:Yup.string().required("Required"),
-      //      `steps[${activeStep}].created_by`:Yup.string().required("Required"),
-      //   }
-      // )}
+      validationSchema={Yup.object().shape({
+        steps: Yup.array().of(
+          Yup.object().shape({
+            name: Yup.string().required("Required"),
+            family: Yup.string().required("Required"),
+            message: Yup.string().required("Required"),
+            description: Yup.string().required("Required"),
+            created_by: Yup.string().required("Required"),
+          })
+        ),
+      })}
       onSubmit={handleSubmit}
     >
       {({ isSubmitting }) => {
@@ -128,6 +135,11 @@ export const LinaerStepper = () => {
             >
               Finish
             </Button>
+            {loading && (
+              <Box sx={{ width: "100%", marginTop: "16px" }}>
+                <LinearProgress />
+              </Box>
+            )}
           </Form>
         );
       }}
