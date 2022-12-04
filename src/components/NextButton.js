@@ -1,6 +1,6 @@
 import { Button } from "@material-ui/core";
 import { useFormikContext } from "formik";
-import { stepDefaultData } from "./formInitialValues";
+import { stepDefaultData } from "../config/formInitialValues";
 
 const NextButton = (props) => {
   const { values, setValues } = useFormikContext();

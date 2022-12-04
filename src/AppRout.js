@@ -2,8 +2,8 @@ import React from "react";
 import {
     BrowserRouter as Router, useRoutes
 } from "react-router-dom";
-import { StepTable } from "./Api/StepTable";
-import { LinaerStepper } from "./LinearStepper";
+import { LinaerStepper } from "./page/LinearStepper";
+import { StepTable } from "./page/StepTable";
 
 
 const Component1 = () => {
