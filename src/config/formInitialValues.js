@@ -1,6 +1,6 @@
 
 export const stepDefaultData = {
-  description: "",
+  product: "",
   name: "",
   family: "",
   message: "",
@@ -8,4 +8,5 @@ export const stepDefaultData = {
 };
 export const initialValues = { steps: [{...stepDefaultData}] };
 // export const initialValues = { steps: [{...stepDefaultData,name:'arash'}] };
+
 

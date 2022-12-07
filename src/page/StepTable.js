@@ -47,68 +47,90 @@ const rootStyles = {
 };
 export function StepTable() {
   const [dataSteps, setDataSteps] = React.useState([]);
-  const [StepId, setStepId] = React.useState('');
+  const [StepId, setStepId] = React.useState("");
+  const [disable, setDisable] = React.useState(false);
   const dispatch = useDispatch();
   // const data = useSelector((state) => state.counter.step?.steps);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   React.useEffect(() => {
-    getSteps().then(async (res) => {
-      const data = res.data.ProcessPipe[0].data;
+    setDisable(true);
+    getSteps().then((res) => {
+      const data = res?.data.ProcessPipe;
+      setDisable(false);
       setDataSteps(data);
-      setStepId(res.data.ProcessPipe[0].id)
     });
-  }, [setDataSteps]);
+  }, [StepId]);
 
-  const handleRemove = ()=>{
-    deleteSteps(StepId).then((res)=>navigate('/'))
-  }
+  const handleRemove = (id) => {
+    setDisable(true);
+    deleteSteps(id).then((res) => {
+      setStepId(id);
+      setDisable(false);
+    });
+  };
 
   return (
     <Grid sx={rootStyles}>
-      <TableContainer sx={{display:'flex',flexDirection:'column',justifyContent:'center'}}>
-        <Table aria-label="customized table">
-          <TableHead sx={{ backgroundColor: "background.table" }}>
-            <TableRow style={{ color: "text.white" }}>
-              <StyledTableCell align="center">step</StyledTableCell>
-              <StyledTableCell align="center">name</StyledTableCell>
-              <StyledTableCell align="center">family</StyledTableCell>
-              <StyledTableCell align="center">message</StyledTableCell>
-              <StyledTableCell align="center">description</StyledTableCell>
-              <StyledTableCell align="center">created_by</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {dataSteps?.map((item, index) => {
-              return (
-                <StyledTableRow key={index}>
-                  <StyledTableCell align="center">{index + 1}</StyledTableCell>
-                  <StyledTableCell align="center">{item.name}</StyledTableCell>
-                  <StyledTableCell align="center">
-                    {item.family}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {item.message}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {item.description}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {item.created_by}
-                  </StyledTableCell>
-                </StyledTableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <Button
-          variant="contained"
-          color="primary"
-          type="button"
-          onClick={handleRemove}
-        >
-          Remove Steps
-        </Button>
-      </TableContainer>
+      {dataSteps.map((step, index) => {
+        return (
+          <TableContainer
+            key={index}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Table aria-label="customized table" sx={{ marginTop: "16px" }}>
+              <TableHead sx={{ backgroundColor: "background.table" }}>
+                <TableRow style={{ color: "text.white" }}>
+                  <StyledTableCell align="center">step</StyledTableCell>
+                  <StyledTableCell align="center">name</StyledTableCell>
+                  <StyledTableCell align="center">family</StyledTableCell>
+                  <StyledTableCell align="center">message</StyledTableCell>
+                  <StyledTableCell align="center">product</StyledTableCell>
+                  <StyledTableCell align="center">created_by</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {step.data?.map((item, index) => {
+                  return (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell align="center">
+                        {index + 1}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {item.name}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {item.family}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {item.message}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {item.product?.map((item) => `${item.value} `)}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {item.created_by?.map((item) => `${item.value} `)}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+            <Button
+              disabled={disable}
+              variant="contained"
+              color="primary"
+              type="button"
+              onClick={() => handleRemove(step.id)}
+            >
+              Remove Steps
+            </Button>
+          </TableContainer>
+        );
+      })}
     </Grid>
   );
 }

@@ -21,58 +21,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const currentValidationSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  family: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  message: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  created_by: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  description: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-});
-
-export function getStepContent({ dataSteps }) {}
-
 export const LinaerStepper = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [dataSteps, setDataSteps] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [value, setValue] = React.useState("");
+  const [todos, setTodos] = useState([]);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // const handleReset = (event) => {
+  //   setValue("sad");
+  //   console.log(event)
+  // };
+
+
   const handleNext = async (nextStep) => {
     setActiveStep(nextStep);
-    await getSteps().then((res) => console.log(res));
+    // await getSteps().then((res) => console.log(res));
     // setActiveStep(activeStep + 1);
   };
   useEffect(() => {
     dataSteps.map((item) => {});
   }, [dataSteps]);
-
-  const createValidation = () => {
-    const data = [
-      `steps[${activeStep}].name`,
-      `steps[${activeStep}].family`,
-      `steps[${activeStep}].message`,
-      `steps[${activeStep}].description`,
-      `steps[${activeStep}].created_by`,
-    ];
-    return data;
-  };
 
   const handleRemove = (nextStep) => {
     setActiveStep(nextStep);
@@ -103,8 +76,8 @@ export const LinaerStepper = () => {
             name: Yup.string().required("Required"),
             family: Yup.string().required("Required"),
             message: Yup.string().required("Required"),
-            description: Yup.string().required("Required"),
-            created_by: Yup.string().required("Required"),
+            product: Yup.array().required("Required"),
+            created_by: Yup.array().required("Required"),
           })
         ),
       })}
@@ -114,12 +87,12 @@ export const LinaerStepper = () => {
         return (
           <Form>
             <Stepper activeStep={activeStep} />
-            <StepForm step={activeStep} />
+            <StepForm step={activeStep} value={todos}/>
             <RemoveButton
               className={classes.button}
               activeStep={activeStep}
               onChange={handleRemove}
-            />
+              />
             <NextButton
               className={classes.button}
               onChange={handleNext}
